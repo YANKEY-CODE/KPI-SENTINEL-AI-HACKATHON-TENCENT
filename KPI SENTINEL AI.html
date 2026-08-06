@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://unpkg.com" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://unpkg.com/@fortawesome/fontawesome-free@6.7.2/js/all.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      scrollbar-width: none;
+      scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    }
+  </style>
+</head>
+
+<body>
+<style>
+:root{--brand:#2563eb;--bg:#f4f6fa;--surface:#fff;--text:#1c2333;--text-muted:#6b7280;--low:#16a34a;--low-bg:#dcfce7;--medium:#d97706;--medium-bg:#fef9c3;--high:#ea580c;--high-bg:#ffedd5;--critical:#dc2626;--critical-bg:#fee2e2;--radius:12px;--radius-chip:10px;--shadow:0 2px 8px rgba(0,0,0,.06);--font:'Segoe UI',Arial,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}
+button{font-family:var(--font);cursor:pointer;border:none;outline:none}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+input,textarea,select{font-family:var(--font);font-size:15px}
+.container{max-width:1080px;margin:0 auto;padding:0 20px}
+.btn-primary{background:var(--brand);color:#fff;border-radius:8px;padding:10px 24px;font-size:15px;font-weight:600;min-height:44px;display:inline-flex;align-items:center;gap:8px;transition:background .2s}
+.btn-primary:hover{background:#1d4ed8}
+.btn-primary:disabled{background:#93c5fd;cursor:not-allowed}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid #d1d5db;border-radius:8px;padding:10px 24px;font-size:15px;font-weight:500;min-height:44px;display:inline-flex;align-items:center;gap:8px;transition:border-color .2s}
+.btn-secondary:hover{border-color:var(--brand);color:var(--brand)}
+.btn-text{background:none;color:var(--brand);font-size:14px;font-weight:500;padding:8px 12px;min-height:44px;display:inline-flex;align-items:center;gap:6px}
+.btn-text:hover{text-decoration:underline}
+.btn-destructive{background:none;color:var(--critical);font-size:14px;font-weight:500;padding:8px 12px;min-height:44px;display:inline-flex;align-items:center;gap:6px}
+.btn-destructive:hover{text-decoration:underline}
+.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+.chip{display:inline-flex;align-items:center;padding:4px 14px;border-radius:var(--radius-chip);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.chip-low{background:var(--low-bg);color:var(--low)}.chip-medium{background:var(--medium-bg);color:var(--medium)}.chip-high{background:var(--high-bg);color:var(--high)}.chip-critical{background:var(--critical-bg);color:var(--critical)}
+.text-muted{color:var(--text-muted)}
+.delta-good{color:var(--low);font-weight:600}.delta-bad{color:var(--critical);font-weight:600}.delta-neutral{color:var(--text-muted)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;padding:10px 12px;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid #e5e7eb}
+td{padding:10px 12px;border-bottom:1px solid #f0f0f0}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.page{display:none;padding-bottom:60px}.page.active{display:block}
+nav{background:var(--surface);border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:100}
+nav .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 20px;max-width:1080px;margin:0 auto;height:56px}
+nav .logo{font-size:18px;font-weight:800;color:var(--brand);display:flex;align-items:center;gap:8px}
+nav .logo span{background:var(--brand);color:#fff;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+nav .nav-links{display:flex;gap:4px}
+nav .nav-links a{padding:8px 16px;font-size:14px;font-weight:500;color:var(--text-muted);border-bottom:2px solid transparent;min-height:44px;display:flex;align-items:center;transition:color .2s}
+nav .nav-links a:hover{color:var(--text)}
+nav .nav-links a.active{color:var(--brand);border-bottom-color:var(--brand)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1c2333;color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:500;z-index:9999;opacity:0;transition:all .3s ease}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{background:var(--surface);border-radius:var(--radius);padding:28px;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.wizard{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 0;font-size:13px;color:var(--text-muted)}
+.wizard .step{display:flex;align-items:center;gap:6px}.wizard .step .num{width:28px;height:28px;border-radius:50%;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+.wizard .step.active .num{background:var(--brand);color:#fff;border-color:var(--brand)}.wizard .step.done .num{background:var(--low);color:#fff;border-color:var(--low)}
+.wizard .sep{width:32px;height:2px;background:#d1d5db;border-radius:1px}
+.risk-banner{padding:28px 32px;border-radius:var(--radius);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px}
+.risk-banner .score{font-size:46px;font-weight:800;line-height:1}
+.risk-banner .score-suffix{font-size:18px;font-weight:600;opacity:.8}
+.risk-banner .breakdown{font-size:13px;opacity:.85;margin-top:4px}
+.risk-banner .level-tag{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:8px 20px;border-radius:var(--radius-chip);background:rgba(255,255,255,.25)}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px}
+.kpi-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 16px}
+.kpi-card .kpi-label{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
+.kpi-card .kpi-value{font-size:20px;font-weight:700;margin-bottom:4px}
+.kpi-card .kpi-delta{font-size:13px}
+.alert-bar{border-left:5px solid;padding:16px 20px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:24px;font-size:14px;line-height:1.7}
+.alert-bar strong{font-weight:700}
+.trajectory{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.trajectory .t-chip{display:flex;flex-direction:column;align-items:center;padding:10px 16px;border-radius:var(--radius-chip);min-width:80px}
+.trajectory .t-chip .t-month{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;opacity:.8}
+.trajectory .t-chip .t-score{font-size:20px;font-weight:800;line-height:1.2}
+.trajectory .t-chip .t-level{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.trajectory .t-arrow{font-size:18px;color:var(--text-muted)}
+.drop-zone{border:2px dashed #d1d5db;border-radius:var(--radius);padding:48px 24px;text-align:center;cursor:pointer;transition:all .2s}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--brand);background:rgba(37,99,235,.04)}
+.drop-zone .dz-icon{font-size:48px;color:#d1d5db;margin-bottom:12px}
+.comp-bar{display:flex;height:32px;border-radius:8px;overflow:hidden;margin-bottom:8px}
+.comp-bar .seg{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;min-width:24px}
+.action-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:16px;border-left:4px solid var(--brand)}
+.action-card .rank{width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0}
+.action-card .action-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.action-card .action-fields label{font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px}
+.action-card .action-fields input,.action-card .action-fields textarea{width:100%;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px}
+.action-card .action-fields textarea{resize:vertical;min-height:60px}
+.schema-list{list-style:none}
+.schema-list li{padding:6px 0;font-size:14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f0f0f0}
+.schema-list li .check{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.schema-list li .check.ok{background:var(--low-bg);color:var(--low)}
+.schema-list li .check.fail{background:var(--critical-bg);color:var(--critical)}
+.hypothesis{border-left:5px solid var(--medium);background:var(--medium-bg);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:12px;font-size:14px;line-height:1.7}
+.hypothesis em{font-style:italic;font-weight:600;color:var(--medium)}
+.report-section{margin-bottom:28px}
+.report-section h3{font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #e5e7eb}
+.report-section ul{padding-left:20px}
+.report-section ul li{margin-bottom:8px;font-size:14px;line-height:1.7}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.filter-chips{display:flex;gap:8px;flex-wrap:wrap}
+.filter-chip{padding:6px 16px;border-radius:var(--radius-chip);font-size:13px;font-weight:600;cursor:pointer;border:1px solid #d1d5db;background:var(--surface);transition:all .2s;min-height:36px;display:inline-flex;align-items:center}
+.filter-chip.active{border-color:var(--brand);background:rgba(37,99,235,.08);color:var(--brand)}
+@media(max-width:1199px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.compare-grid{grid-template-columns:1fr}}
+@media(max-width:767px){
+nav .nav-links a{padding:8px 10px;font-size:13px}.container{padding:0 16px}.wizard .sep{width:16px}.wizard{font-size:12px}
+.kpi-grid{grid-template-columns:1fr}.risk-banner{flex-direction:column;align-items:flex-start;padding:20px}.risk-banner .score{font-size:36px}
+.trajectory{flex-direction:column;align-items:stretch}.trajectory .t-arrow{display:none}.trajectory .t-chip{flex-direction:row;justify-content:space-between;padding:10px 16px}
+.action-card .action-fields{grid-template-columns:1fr}.compare-grid{grid-template-columns:1fr}.comp-bar{height:24px}
+}
+@media print{nav,.wizard,.btn-primary,.btn-secondary,.btn-text{display:none!important}body{background:#fff!important}.card{box-shadow:none!important;border:1px solid #e5e7eb}}
+</style>
+<nav><div class="nav-inner"><div class="logo"><span>KS</span> KPI Sentinel AI</div><div class="nav-links"><a href="#/home" data-nav="home">Home</a><a href="#/upload" data-nav="upload">New Analysis</a><a href="#/history" data-nav="history">History</a></div></div></nav>
+<div class="toast" id="toast"></div>
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()"><div class="modal" id="modalContent"></div></div>
+<div class="page" id="page-home"></div>
+<div class="page" id="page-upload"></div>
+<div class="page" id="page-dashboard"></div>
+<div class="page" id="page-report"></div>
+<div class="page" id="page-recommendations"></div>
+<div class="page" id="page-history"></div>
+<script>
+const DEMO_CSV=`Month,Revenue,Operating_Cost,Sales_Target,Actual_Sales,Customer_Complaints,Customer_Satisfaction
+Jan,1438200,912400,1550000,1447500,41,84
+Feb,1471800,928600,1550000,1482300,38,85
+Mar,1523500,951200,1580000,1536800,44,86
+Apr,1497300,958700,1580000,1509200,47,83
+May,1551600,972300,1610000,1562700,43,85
+Jun,1578900,986500,1610000,1588400,40,86
+Jul,1556400,997800,1640000,1567900,49,82
+Aug,1592100,1008300,1640000,1601600,46,83
+Sep,1534700,1062500,1680000,1518200,68,78
+Oct,1389600,1118400,1680000,1342800,97,71
+Nov,1187300,1176900,1720000,1153400,138,64
+Dec,1062800,1231500,1760000,1021700,176,58`;
+const REQUIRED_COLUMNS=['Month','Revenue','Operating_Cost','Sales_Target','Actual_Sales','Customer_Complaints','Customer_Satisfaction'];
+const STORAGE_KEY='kpi_sentinel_runs';
+let currentDataset=null,currentResult=null,currentLabel='',actionStatuses={},actionFormData={};
+let historyFilters={levels:new Set(),search:''};
+let historySort={col:'timestamp',asc:false};
+let historyChecked=new Set();
+
+function fmt(n){if(n==null||isNaN(n))return'\u2014';return Number(n).toLocaleString('en-MY')}
+function fmtRM(n){return'RM'+fmt(n)}
+function fmtPct(n){return(n>=0?'+':'')+n.toFixed(1)+'%'}
+function fmtPctAbs(n){return n.toFixed(1)+'%'}
+function levelColor(l){return{low:'var(--low)',medium:'var(--medium)',high:'var(--high)',critical:'var(--critical)'}[l.toLowerCase()]||'var(--text-muted)'}
+function levelBg(l){return{low:'var(--low-bg)',medium:'var(--medium-bg)',high:'var(--high-bg)',critical:'var(--critical-bg)'}[l.toLowerCase()]||'#f0f0f0'}
+function levelClass(l){return'chip-'+l.toLowerCase()}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+function showModal(h){document.getElementById('modalContent').innerHTML=h;document.getElementById('modalOverlay').classList.add('show')}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+
+function parseCSV(text){
+  const lines=text.trim().split(/\r?\n/).filter(l=>l.trim());
+  if(lines.length<1)return{headers:[],rows:[]};
+  const headers=lines[0].split(',').map(h=>h.trim());
+  const rows=[];
+  for(let i=1;i<lines.length;i++){const vals=lines[i].split(',').map(v=>v.trim());if(vals.length<headers.length)continue;const row={};headers.forEach((h,j)=>row[h]=vals[j]);rows.push(row)}
+  return{headers,rows};
+}
+
+function validateDataset(rows,headers){
+  const errors=[],colStatus={};
+  REQUIRED_COLUMNS.forEach(c=>{const found=headers.map(h=>h.toLowerCase()).includes(c.toLowerCase());colStatus[c]=found;if(!found)errors.push('Missing column: `'+c+'`. Expected 7 columns \u2014 see checklist.')});
+  if(errors.length>0)return{valid:false,errors,colStatus};
+  if(rows.length<3){errors.push('At least 3 months of data are required for trend analysis.');return{valid:false,errors,colStatus}}
+  const numCols=['Revenue','Operating_Cost','Sales_Target','Actual_Sales','Customer_Complaints','Customer_Satisfaction'];
+  rows.forEach((r,i)=>{numCols.forEach(c=>{if(isNaN(parseFloat(r[c])))errors.push('Row '+(i+1)+': `'+c+'` must be a number.')});
+    const csat=parseFloat(r.Customer_Satisfaction);if(!isNaN(csat)&&(csat<0||csat>100))errors.push('Row '+(i+1)+': `Customer_Satisfaction` must be between 0 and 100.');
+    const comp=parseFloat(r.Customer_Complaints);if(!isNaN(comp)&&comp<0)errors.push('Row '+(i+1)+': `Customer_Complaints` cannot be negative.')});
+  return{valid:errors.length===0,errors,colStatus};
+}
+
+function computeMetrics(rows){
+  const n=rows.length,latest=rows[n-1],prev=rows[n-2];
+  const nv=c=>parseFloat(latest[c]),np=c=>parseFloat(prev[c]);
+  const baseN=Math.min(8,n),baseline={},periodAvg={},momPct={},change3={};
+  ['Revenue','Operating_Cost','Customer_Complaints','Customer_Satisfaction'].forEach(c=>{
+    let s=0;for(let i=0;i<baseN;i++)s+=parseFloat(rows[i][c]);baseline[c]=s/baseN;
+    let s2=0;for(let i=0;i<n;i++)s2+=parseFloat(rows[i][c]);periodAvg[c]=s2/n;
+    momPct[c]=((nv(c)-np(c))/np(c))*100;
+    if(n>=4){const m3=parseFloat(rows[n-4][c]);change3[c]=((nv(c)-m3)/m3)*100}else{change3[c]=0}
+  });
+  const achievement=(parseFloat(latest.Actual_Sales)/parseFloat(latest.Sales_Target))*100;
+  const complaintMultiple=nv('Customer_Complaints')/baseline.Customer_Complaints;
+  const csatGapPct=((baseline.Customer_Satisfaction-nv('Customer_Satisfaction'))/baseline.Customer_Satisfaction)*100;
+  let revenueDeclineStreak=0;
+  for(let i=n-1;i>=1;i--){if(parseFloat(rows[i].Revenue)<parseFloat(rows[i-1].Revenue))revenueDeclineStreak++;else break}
+  const lossMonth=nv('Operating_Cost')>=nv('Revenue');
+  const drop3Pct=change3.Revenue<0?Math.abs(change3.Revenue):0;
+  const rise3Pct=change3.Operating_Cost>0?change3.Operating_Cost:0;
+  return{latest,prev,baseline,periodAvg,momPct,achievement,complaintMultiple,csatGapPct,change3,revenueDeclineStreak,lossMonth,drop3Pct,rise3Pct,rows,n};
+}
+
+function scoreRevenue(streak,drop3Pct){if(streak>=3&&drop3Pct>20)return 25;if(drop3Pct>=10)return 16;if(streak>=1||drop3Pct>0)return 8;return 0}
+function scoreTarget(a){if(a>=90)return 0;if(a>=75)return 7;if(a>=60)return 13;return 20}
+function scoreCost(r,l){if(l||r>10)return 15;if(r>=6)return 10;if(r>=3)return 5;return 0}
+function scoreComplaints(m){if(m<=1.25)return 0;if(m<=2)return 7;if(m<=3)return 13;return 20}
+function scoreSatisfaction(g){if(g<5)return 0;if(g<=12)return 7;if(g<=25)return 13;return 20}
+function classifyLevel(t){if(t<=25)return'Low';if(t<=50)return'Medium';if(t<=75)return'High';return'Critical'}
+function scoreAll(m){
+  const r=scoreRevenue(m.revenueDeclineStreak,m.drop3Pct),t=scoreTarget(m.achievement),c=scoreCost(m.rise3Pct,m.lossMonth),cm=scoreComplaints(m.complaintMultiple),s=scoreSatisfaction(m.csatGapPct);
+  const total=r+t+c+cm+s;return{components:{revenue:r,target:t,cost:c,complaints:cm,satisfaction:s},total,level:classifyLevel(total)};
+}
+
+function scoreEveryMonth(rows){
+  const results=[],baseN=Math.min(8,rows.length),baseline={};
+  ['Revenue','Operating_Cost','Customer_Complaints','Customer_Satisfaction'].forEach(c=>{let s=0;for(let i=0;i<baseN;i++)s+=parseFloat(rows[i][c]);baseline[c]=s/baseN});
+  for(let m=0;m<rows.length;m++){
+    const lat=rows[m],nv=c=>parseFloat(lat[c]);
+    let streak=0;for(let i=m;i>=1;i--){if(parseFloat(rows[i].Revenue)<parseFloat(rows[i-1].Revenue))streak++;else break}
+    let d3=0,r3=0;
+    if(m>=3){const rc=((nv('Revenue')-parseFloat(rows[m-3].Revenue))/parseFloat(rows[m-3].Revenue))*100;d3=rc<0?Math.abs(rc):0;const cc=((nv('Operating_Cost')-parseFloat(rows[m-3].Operating_Cost))/parseFloat(rows[m-3].Operating_Cost))*100;r3=cc>0?cc:0}
+    const ach=(parseFloat(lat.Actual_Sales)/parseFloat(lat.Sales_Target))*100;
+    const cm=nv('Customer_Complaints')/baseline.Customer_Complaints;
+    const cg=((baseline.Customer_Satisfaction-nv('Customer_Satisfaction'))/baseline.Customer_Satisfaction)*100;
+    const lm=nv('Operating_Cost')>=nv('Revenue');
+    const rv=scoreRevenue(streak,d3),tg=scoreTarget(ach),cs=scoreCost(r3,lm),cp=scoreComplaints(cm),sa=scoreSatisfaction(cg);
+    const total=rv+tg+cs+cp+sa;
+    results.push({month:lat.Month,total,level:classifyLevel(total),components:{revenue:rv,target:tg,cost:cs,complaints:cp,satisfaction:sa}});
+  }
+  return results;
+}
+
+function detectAnomalies(metrics){
+  const fin=[],cust=[],breaches=[];
+  const{latest,baseline,periodAvg,momPct,rows,n,complaintMultiple,lossMonth}=metrics;
+  const nv=c=>parseFloat(latest[c]);
+  if(metrics.revenueDeclineStreak>=3){
+    const dm=[];for(let i=n-metrics.revenueDeclineStreak;i<n;i++)dm.push(rows[i].Month);
+    const pb=((periodAvg.Revenue-nv('Revenue'))/periodAvg.Revenue*100).toFixed(1);
+    fin.push('Revenue fell for '+metrics.revenueDeclineStreak+' consecutive months ('+dm.join(', ')+'), '+pb+'% below the period average ('+fmtRM(Math.round(periodAvg.Revenue))+').');
+  }
+  if(metrics.rise3Pct>10)fin.push('Operating costs rose '+metrics.rise3Pct.toFixed(1)+'% over three months, outpacing revenue growth.');
+  if(lossMonth){const mg=nv('Revenue')-nv('Operating_Cost');breaches.push(latest.Month+' is an operating-loss month: Revenue '+fmtRM(nv('Revenue'))+' \u2212 Cost '+fmtRM(nv('Operating_Cost'))+' = '+fmtRM(mg)+'.')}
+  if(complaintMultiple>1.25)cust.push('Customer Complaints hit '+fmt(nv('Customer_Complaints'))+' \u2014 '+complaintMultiple.toFixed(1)+'\u00d7 the healthy baseline ('+fmt(Math.round(baseline.Customer_Complaints))+').');
+  if(metrics.csatGapPct>=5)cust.push('Customer Satisfaction fell to '+nv('Customer_Satisfaction')+'% \u2014 '+metrics.csatGapPct.toFixed(1)+'% below baseline ('+baseline.Customer_Satisfaction.toFixed(1)+'%).');
+  return{financial:fin,customer:cust,breaches};
+}
+
+function recommendActions(scores,metrics){
+  const c=scores.components;
+  const mapping=[
+    {key:'complaints',pts:c.complaints,threshold:13,text:function(){return'Investigate the complaint surge ('+fmt(Math.round(metrics.baseline.Customer_Complaints))+' \u2192 '+fmt(parseFloat(metrics.latest.Customer_Complaints))+'): categorise recent complaints and fix the top causes within two weeks.'},metric:'Complaint count below baseline within 30 days'},
+    {key:'satisfaction',pts:c.satisfaction,threshold:13,text:function(){return'Launch a customer-retention recovery plan (win-back offers + service follow-ups); review satisfaction weekly until above 75%.'},metric:'Customer Satisfaction \u2265 75% by weekly review'},
+    {key:'cost',pts:c.cost,threshold:10,text:function(){return'Review operating-cost categories (up '+metrics.rise3Pct.toFixed(1)+'% since '+metrics.rows[Math.max(0,metrics.n-4)].Month+') and freeze non-essential spending until monthly profitability is restored.'},metric:'Monthly profitability restored within 60 days'},
+    {key:'revenue',pts:c.revenue,threshold:16,text:function(){return'Convene a revenue-recovery review: identify the customer segments driving the '+metrics.drop3Pct.toFixed(1)+'% three-month decline and assign retention owners.'},metric:'Revenue stabilisation within 90 days'},
+    {key:'target',pts:c.target,threshold:13,text:function(){return'Re-baseline the sales forecast: achievement has fallen to '+metrics.achievement.toFixed(1)+'% \u2014 reset next month\'s plan and pipeline coverage accordingly.'},metric:'Achievement \u2265 75% next quarter'}
+  ];
+  mapping.sort(function(a,b){return b.pts-a.pts});
+  const actions=[];
+  for(var i=0;i<mapping.length&&actions.length<3;i++){if(mapping[i].pts>=mapping[i].threshold)actions.push({key:mapping[i].key,pts:mapping[i].pts,text:mapping[i].text(),metric:mapping[i].metric,owner:'',due:''})}
+  return actions;
+}
+
+function generateHypotheses(metrics,rows){
+  const hyps=[],n=rows.length,bl=metrics.baseline.Customer_Complaints;
+  let ccm=null;for(let i=0;i<n;i++){if(parseFloat(rows[i].Customer_Complaints)/bl>1.25){ccm=rows[i].Month;break}}
+  let rds=null;for(let i=1;i<n;i++){if(parseFloat(rows[i].Revenue)<parseFloat(rows[i-1].Revenue)){let ok=true;for(let j=i;j<n-1;j++){if(parseFloat(rows[j+1].Revenue)>=parseFloat(rows[j].Revenue)){ok=false;break}}if(ok||metrics.revenueDeclineStreak>=3){rds=rows[i].Month;break}}}
+  if(ccm&&rds){const ci=rows.findIndex(r=>r.Month===ccm),ri=rows.findIndex(r=>r.Month===rds);if(ci<=ri)hyps.push('Possible cause: customer-experience deterioration began in '+ccm+', the same period revenue started falling \u2014 consistent with service-quality issues driving lost sales. This is correlation, not proof of causation.')}
+  if(metrics.rise3Pct>0&&metrics.drop3Pct>0)hyps.push('Possible cause: costs rising '+metrics.rise3Pct.toFixed(1)+'% while revenue falls may indicate service-recovery spending, discounting, or inefficiency \u2014 cost-line detail is needed to confirm.');
+  hyps.push('External factors (competition, seasonality) cannot be ruled out; the dataset contains no such variables.');
+  return hyps;
+}
+
+function runAnalysis(rows,label){
+  const metrics=computeMetrics(rows),scores=scoreAll(metrics),trajectory=scoreEveryMonth(rows);
+  const anomalies=detectAnomalies(metrics),actions=recommendActions(scores,metrics),hypotheses=generateHypotheses(metrics,rows);
+  return{metrics,scores,trajectory,anomalies,actions,hypotheses,rows,label};
+}
+
+function loadHistory(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return[]}}
+function saveHistory(r){localStorage.setItem(STORAGE_KEY,JSON.stringify(r))}
+function addToHistory(result){
+  const runs=loadHistory();
+  const ta=(result.anomalies.financial[0]||result.anomalies.customer[0]||result.anomalies.breaches[0]||'No anomalies detected').substring(0,80);
+  runs.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),timestamp:new Date().toISOString(),label:result.label||'Analysis',score:result.scores.total,level:result.scores.level,topAnomaly:ta,actions:result.actions.length,rows:result.rows});
+  saveHistory(runs);
+}
+
+function navigate(hash){
+  if(!hash||hash==='#/'||hash==='#')hash='#/home';
+  const route=hash.replace('#/','');
+  location.hash='#/'+route;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page=document.getElementById('page-'+route);
+  if(page)page.classList.add('active');else document.getElementById('page-home').classList.add('active');
+  document.querySelectorAll('[data-nav]').forEach(a=>{a.classList.toggle('active',a.dataset.nav===route||(route==='dashboard'&&a.dataset.nav==='upload')||(route==='report'&&a.dataset.nav==='upload')||(route==='recommendations'&&a.dataset.nav==='upload'))});
+  window.scrollTo(0,0);
+  if(route==='home')renderHome();if(route==='upload')renderUpload();if(route==='dashboard')renderDashboard();
+  if(route==='report')renderReport();if(route==='recommendations')renderRecommendations();if(route==='history')renderHistory();
+}
+window.addEventListener('hashchange',function(){navigate(location.hash)});
+
+function renderHome(){
+  const runs=loadHistory(),hasRuns=runs.length>0,recent=runs.slice(0,3);
+  document.getElementById('page-home').innerHTML='<div class="container" style="padding-top:60px;padding-bottom:40px"><div style="text-align:center;max-width:640px;margin:0 auto '+(hasRuns?'48':'60')+'px"><div style="font-size:14px;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">AI-Powered KPI Analysis</div><h1 style="font-size:'+(hasRuns?'32':'38')+'px;font-weight:800;margin-bottom:16px;line-height:1.2">Know your business risk before your next meeting</h1><p style="font-size:17px;color:var(--text-muted);margin-bottom:32px;line-height:1.7">Upload monthly KPI data and get an instant risk score, anomaly alerts, and actionable recommendations \u2014 all in under a minute.</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button class="btn-primary" onclick="navigate(\'#/upload\')" style="font-size:16px;padding:14px 32px">New Analysis</button><button class="btn-secondary" onclick="loadDemo()" style="font-size:16px;padding:14px 32px">Load Demo Dataset</button></div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:'+(hasRuns?'48':'32')+'px;max-width:720px;margin-left:auto;margin-right:auto"><div class="card" style="text-align:center;padding:24px 16px"><div style="font-size:28px;margin-bottom:8px">\ud83d\udd0d</div><div style="font-size:14px;font-weight:700;margin-bottom:4px">Detect Anomalies</div><div style="font-size:12px;color:var(--text-muted)">Flag unusual patterns across financial and customer KPIs</div></div><div class="card" style="text-align:center;padding:24px 16px"><div style="font-size:28px;margin-bottom:8px">\ud83d\udcca</div><div style="font-size:14px;font-weight:700;margin-bottom:4px">Score Risk 0\u2013100</div><div style="font-size:12px;color:var(--text-muted)">Every point traceable to a specific KPI value</div></div><div class="card" style="text-align:center;padding:24px 16px"><div style="font-size:28px;margin-bottom:8px">\ud83c\udfaf</div><div style="font-size:14px;font-weight:700;margin-bottom:4px">Recommend Actions</div><div style="font-size:12px;color:var(--text-muted)">Prioritised steps to reduce risk, ready to assign</div></div></div>'+(hasRuns?'<div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><h2 style="font-size:18px;font-weight:700">Recent Analyses</h2><a href="#/history" style="font-size:14px;font-weight:500">View all \u2192</a></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">'+recent.map(function(r){return'<div class="card" style="cursor:pointer" onclick="openHistoryRun(\''+r.id+'\')"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span style="font-size:13px;color:var(--text-muted)">'+new Date(r.timestamp).toLocaleDateString('en-MY',{day:'numeric',month:'short',year:'numeric'})+'</span><span class="chip '+levelClass(r.level)+'">'+r.level+'</span></div><div style="font-size:15px;font-weight:600;margin-bottom:6px">'+r.label+'</div><div style="font-size:28px;font-weight:800;color:'+levelColor(r.level)+'">'+r.score+'<span style="font-size:14px;font-weight:600;color:var(--text-muted)">/100</span></div></div>'}).join('')+'</div></div>':'<div style="text-align:center;padding:24px;color:var(--text-muted);font-size:14px">Every point of the score is traceable to a KPI value</div>')+'</div>';
+}
+
+function loadDemo(){
+  const d=parseCSV(DEMO_CSV);currentDataset=d.rows;currentLabel='Demo Dataset \u2014 Jan to Dec';
+  currentResult=runAnalysis(d.rows,currentLabel);addToHistory(currentResult);actionStatuses={};actionFormData={};navigate('#/dashboard');
+}
+
+function renderUpload(){
+  document.getElementById('page-upload').innerHTML='<div class="container" style="padding-top:24px"><div class="wizard"><div class="step active"><div class="num">1</div> Upload</div><div class="sep"></div><div class="step"><div class="num">2</div> Analysis</div><div class="sep"></div><div class="step"><div class="num">3</div> Report</div></div><div style="max-width:720px;margin:0 auto"><h1 style="font-size:26px;font-weight:700;margin-bottom:8px">Upload KPI Data</h1><p style="color:var(--text-muted);font-size:14px;margin-bottom:24px">Upload a CSV file with monthly KPI data. <a href="javascript:void(0)" onclick="downloadTemplate()" style="font-weight:600">Download template</a></p><div class="drop-zone" id="dropZone" onclick="document.getElementById(\'fileInput\').click()"><div class="dz-icon">\ud83d\udcc1</div><div style="font-size:16px;font-weight:600;margin-bottom:4px">Drop CSV here or browse</div><div style="font-size:13px;color:var(--text-muted)">Accepts .csv files up to 2 MB</div></div><input type="file" id="fileInput" accept=".csv" style="display:none" onchange="handleFileSelect(this)"><div id="fileInfo" style="display:none"></div><div id="schemaCheck" style="display:none;margin-top:24px"><h3 style="font-size:15px;font-weight:600;margin-bottom:12px">Schema Validation</h3><ul class="schema-list" id="schemaList"></ul></div><div id="uploadErrors" style="display:none;margin-top:16px"></div><div id="dataPreview" style="display:none;margin-top:24px"><h3 style="font-size:15px;font-weight:600;margin-bottom:12px">Data Preview (first 5 rows)</h3><div class="table-wrap" id="previewTable"></div></div><div id="uploadOptions" style="display:none;margin-top:24px"><div style="margin-bottom:16px"><label style="font-size:13px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px">Dataset Label (optional)</label><input type="text" id="datasetLabel" placeholder="e.g., Q4 2024 Review" maxlength="60" style="width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px"></div><div><label style="font-size:13px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px">Business Context (optional)</label><textarea id="bizContext" placeholder="e.g., System outage in November" maxlength="500" rows="3" style="width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;resize:vertical"></textarea></div></div><div style="display:flex;gap:12px;margin-top:24px;justify-content:flex-end;flex-wrap:wrap"><button class="btn-text" onclick="navigate(\'#/home\')">\u2190 Back</button><button class="btn-primary" id="runAnalysisBtn" disabled onclick="runUploadedAnalysis()">Run Analysis</button></div></div></div>';
+  var dz=document.getElementById('dropZone');
+  dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('dragover')});
+  dz.addEventListener('dragleave',function(){dz.classList.remove('dragover')});
+  dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('dragover');if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0])});
+}
+function handleFileSelect(inp){if(inp.files[0])processFile(inp.files[0])}
+function processFile(file){
+  if(!file.name.endsWith('.csv')){showUploadError(['Please upload a CSV file. Download the template if needed.']);return}
+  var reader=new FileReader();reader.onload=function(e){
+    var d=parseCSV(e.target.result),v=validateDataset(d.rows,d.headers);
+    document.getElementById('fileInfo').style.display='block';
+    document.getElementById('fileInfo').innerHTML='<div class="card" style="margin-top:16px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:14px;font-weight:600">'+file.name+'</div><div style="font-size:12px;color:var(--text-muted)">'+(file.size/1024).toFixed(1)+' KB \u00b7 '+d.rows.length+' rows'+(d.rows.length>0?' \u00b7 '+d.rows[0].Month+'\u2013'+d.rows[d.rows.length-1].Month:'')+'</div></div><button class="btn-destructive" onclick="clearUpload()">Remove</button></div>';
+    document.getElementById('schemaCheck').style.display='block';
+    document.getElementById('schemaList').innerHTML=REQUIRED_COLUMNS.map(function(c){var ok=v.colStatus[c];return'<li><div class="check '+(ok?'ok':'fail')+'">'+(ok?'\u2713':'\u2717')+'</div> '+c+'</li>'}).join('');
+    if(!v.valid){showUploadError(v.errors);document.getElementById('runAnalysisBtn').disabled=true}else{document.getElementById('uploadErrors').style.display='none';document.getElementById('runAnalysisBtn').disabled=false}
+    if(d.rows.length>0){document.getElementById('dataPreview').style.display='block';var preview=d.rows.slice(0,5);document.getElementById('previewTable').innerHTML='<table><thead><tr>'+d.headers.map(function(h){return'<th>'+h+'</th>'}).join('')+'</tr></thead><tbody>'+preview.map(function(r){return'<tr>'+d.headers.map(function(h){return'<td>'+(r[h]||'')+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table>'}
+    document.getElementById('uploadOptions').style.display=v.valid?'block':'none';
+    if(v.valid)currentDataset=d.rows;
+  };reader.readAsText(file);
+}
+function showUploadError(errors){var el=document.getElementById('uploadErrors');el.style.display='block';el.innerHTML='<div style="background:var(--critical-bg);border-left:4px solid var(--critical);padding:14px 18px;border-radius:0 8px 8px 0">'+errors.map(function(e){return'<div style="font-size:14px;color:var(--critical);margin-bottom:4px">\u26a0 '+e+'</div>'}).join('')+'</div>'}
+function clearUpload(){['fileInfo','schemaCheck','uploadErrors','dataPreview','uploadOptions'].forEach(function(id){document.getElementById(id).style.display='none'});document.getElementById('runAnalysisBtn').disabled=true;document.getElementById('fileInput').value='';currentDataset=null}
+function downloadTemplate(){var csv='Month,Revenue,Operating_Cost,Sales_Target,Actual_Sales,Customer_Complaints,Customer_Satisfaction\nJan,1500000,900000,1600000,1450000,40,85\n';var b=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='kpi_template.csv';a.click()}
+function runUploadedAnalysis(){if(!currentDataset)return;var label=document.getElementById('datasetLabel').value||('Analysis \u2014 '+new Date().toLocaleDateString('en-MY'));currentLabel=label;currentResult=runAnalysis(currentDataset,label);addToHistory(currentResult);actionStatuses={};actionFormData={};navigate('#/dashboard')}
+
+function renderDashboard(){
+  if(!currentResult){navigate('#/home');return}
+  var s=currentResult.scores,c=s.components,m=currentResult.metrics,lat=m.latest,nv=function(k){return parseFloat(lat[k])};
+  var last5=currentResult.trajectory.slice(-5);
+  var fw=currentResult.trajectory.find(function(t){return t.level!=='Low'});
+  var kpis=[
+    {label:'Revenue',value:fmtRM(nv('Revenue')),delta:fmtPct(m.momPct.Revenue),bad:m.momPct.Revenue<0,qual:m.revenueDeclineStreak>=2?m.revenueDeclineStreak+'-month decline':''},
+    {label:'Operating Cost',value:fmtRM(nv('Operating_Cost')),delta:fmtPct(m.momPct.Operating_Cost),bad:m.momPct.Operating_Cost>0,qual:m.lossMonth?'Exceeds revenue':''},
+    {label:'Target Achievement',value:fmtPctAbs(m.achievement),delta:'',bad:m.achievement<75,qual:m.achievement<75?'Below 75% threshold':''},
+    {label:'Customer Complaints',value:fmt(nv('Customer_Complaints')),delta:fmtPct(m.momPct.Customer_Complaints),bad:m.momPct.Customer_Complaints>0,qual:m.complaintMultiple>1.25?m.complaintMultiple.toFixed(1)+'\u00d7 baseline':''},
+    {label:'Customer Satisfaction',value:nv('Customer_Satisfaction')+'%',delta:fmtPct(m.momPct.Customer_Satisfaction),bad:m.momPct.Customer_Satisfaction<0,qual:m.revenueDeclineStreak>=3?m.revenueDeclineStreak+' consecutive declines':''}
+  ];
+  var alertMsg='';
+  if(s.total>0){var parts=[];if(m.revenueDeclineStreak>=2)parts.push('Revenue and customer satisfaction have declined for '+m.revenueDeclineStreak+' consecutive months');if(m.lossMonth){var mg=nv('Revenue')-nv('Operating_Cost');parts.push(lat.Month+' closed at an operating loss of '+fmtRM(mg))}if(m.complaintMultiple>1.25)parts.push('customer complaints reached '+m.complaintMultiple.toFixed(1)+' times the normal baseline');alertMsg=parts.join('. ')+(parts.length?'.':'')}
+  else alertMsg='All KPIs within normal range. Continue routine monitoring.';
+  var tm=m.rows.slice(-3);
+  var html='<div class="container" style="padding-top:24px"><div class="wizard"><div class="step done"><div class="num">\u2713</div> Upload</div><div class="sep"></div><div class="step active"><div class="num">2</div> Analysis</div><div class="sep"></div><div class="step"><div class="num">3</div> Report</div></div><h1 style="font-size:26px;font-weight:700;margin-bottom:20px">Analysis Dashboard</h1>';
+  html+='<div class="risk-banner" style="background:'+levelBg(s.level)+';color:'+levelColor(s.level)+'"><div><div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;opacity:.8;margin-bottom:4px">Overall Risk Score</div><div><span class="score">'+s.total+'</span><span class="score-suffix">/100</span></div><div class="breakdown">Revenue '+c.revenue+' + Target '+c.target+' + Cost '+c.cost+' + Complaints '+c.complaints+' + Satisfaction '+c.satisfaction+'</div></div><div class="level-tag" style="color:'+levelColor(s.level)+'">'+s.level+'</div></div>';
+  html+='<div class="card" style="margin-bottom:24px;padding:24px"><h2 style="font-size:15px;font-weight:600;margin-bottom:16px">Risk Trajectory</h2><div class="trajectory">';
+  last5.forEach(function(t,i){if(i>0)html+='<div class="t-arrow">\u2192</div>';html+='<div class="t-chip" style="background:'+levelBg(t.level)+';color:'+levelColor(t.level)+'"><div class="t-month">'+t.month+'</div><div class="t-score">'+t.total+'</div><div class="t-level">'+t.level+'</div></div>'});
+  html+='</div>'+(fw?'<div style="font-size:13px;color:var(--text-muted);margin-top:12px;font-style:italic">The system fired its first warning in '+fw.month+' \u2014 before revenue crashed.</div>':'')+'</div>';
+  html+='<div class="kpi-grid">'+kpis.map(function(k){return'<div class="kpi-card"><div class="kpi-label">'+k.label+'</div><div class="kpi-value">'+k.value+'</div><div class="kpi-delta '+(k.delta?(k.bad?'delta-bad':'delta-good'):'delta-neutral')+'">'+( k.delta||'\u2014')+(k.qual?' <span style="font-size:11px;font-weight:400;color:var(--text-muted)">\u00b7 '+k.qual+'</span>':'')+'</div></div>'}).join('')+'</div>';
+  html+='<div class="alert-bar" style="border-color:'+levelColor(s.level)+';background:'+levelBg(s.level)+'"><strong>Main Alert:</strong> '+alertMsg+'</div>';
+  // Trend table
+  var tCols=['Revenue','Operating_Cost','Actual_Sales','Customer_Complaints','Customer_Satisfaction'];
+  var tLabels={Revenue:'Revenue',Operating_Cost:'Operating Cost',Actual_Sales:'Achievement',Customer_Complaints:'Complaints',Customer_Satisfaction:'Satisfaction'};
+  html+='<div class="card" style="margin-bottom:24px"><h2 style="font-size:15px;font-weight:600;margin-bottom:16px">3-Month Trend</h2><div class="table-wrap"><table><thead><tr><th>KPI</th>'+tm.map(function(r){return'<th>'+r.Month+'</th>'}).join('')+'<th>3-Mo Change</th></tr></thead><tbody>';
+  tCols.forEach(function(col){
+    var vals=tm.map(function(r){return parseFloat(r[col])});var ch=((vals[2]-vals[0])/vals[0]*100);
+    var dv=vals.map(function(v){return col==='Customer_Satisfaction'?v+'%':(col==='Customer_Complaints'?fmt(v):fmtRM(v))});
+    if(col==='Actual_Sales'){dv=tm.map(function(r){return((parseFloat(r.Actual_Sales)/parseFloat(r.Sales_Target))*100).toFixed(1)+'%'});var av=tm.map(function(r){return(parseFloat(r.Actual_Sales)/parseFloat(r.Sales_Target))*100});ch=av[2]-av[0]}
+    var bad=(col==='Revenue'||col==='Customer_Satisfaction'||col==='Actual_Sales')?ch<0:ch>0;
+    var tint=bad&&Math.abs(ch)>5?'background:var(--critical-bg)':'';
+    html+='<tr style="'+tint+'"><td style="font-weight:600">'+tLabels[col]+'</td>'+dv.map(function(v){return'<td>'+v+'</td>'}).join('')+'<td class="'+(bad?'delta-bad':'delta-good')+'">'+(ch>=0?'+':'')+ch.toFixed(1)+'%</td></tr>';
+  });
+  html+='</tbody></table></div></div>';
+  html+='<div class="card" style="margin-bottom:24px"><h2 style="font-size:15px;font-weight:600;margin-bottom:16px">Recommended Actions</h2><ol style="padding-left:20px">'+currentResult.actions.map(function(a){return'<li style="margin-bottom:12px;font-size:14px;line-height:1.7">'+a.text+'</li>'}).join('')+'</ol></div>';
+  html+='<div style="display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;align-items:center"><div style="font-size:12px;color:var(--text-muted)">Dataset: '+currentLabel+' \u00b7 Generated: '+new Date().toLocaleString('en-MY')+' \u00b7 KPI Sentinel AI v1.0</div><button class="btn-primary" onclick="navigate(\'#/report\')">View Full Report</button></div></div>';
+  document.getElementById('page-dashboard').innerHTML=html;
+}
+
+function renderReport(){
+  if(!currentResult){navigate('#/home');return}
+  var s=currentResult.scores,c=s.components,m=currentResult.metrics,lat=m.latest,nv=function(k){return parseFloat(lat[k])};
+  var bd=[{kpi:'Revenue',ev:m.revenueDeclineStreak+'-month decline, '+m.drop3Pct.toFixed(1)+'% 3-mo drop',pts:c.revenue},{kpi:'Target Achievement',ev:'Achievement at '+m.achievement.toFixed(1)+'%',pts:c.target},{kpi:'Operating Cost',ev:m.rise3Pct.toFixed(1)+'% 3-mo rise'+(m.lossMonth?' + loss month':''),pts:c.cost},{kpi:'Complaints',ev:m.complaintMultiple.toFixed(1)+'\u00d7 baseline ('+fmt(Math.round(m.baseline.Customer_Complaints))+' \u2192 '+fmt(nv('Customer_Complaints'))+')',pts:c.complaints},{kpi:'Satisfaction',ev:m.csatGapPct.toFixed(1)+'% below baseline ('+m.baseline.Customer_Satisfaction.toFixed(1)+'% \u2192 '+nv('Customer_Satisfaction')+'%)',pts:c.satisfaction}];
+  function tierLabel(pts,max){var p=pts/max*100;if(p>=80)return{l:'Critical',c:'chip-critical'};if(p>=50)return{l:'High',c:'chip-high'};if(p>=25)return{l:'Medium',c:'chip-medium'};return{l:'Low',c:'chip-low'}}
+  var maxP={Revenue:25,'Target Achievement':20,'Operating Cost':15,Complaints:20,Satisfaction:20};
+  var segs=[{l:'Revenue',p:c.revenue,cl:tierLabel(c.revenue,25)},{l:'Target',p:c.target,cl:tierLabel(c.target,20)},{l:'Cost',p:c.cost,cl:tierLabel(c.cost,15)},{l:'Complaints',p:c.complaints,cl:tierLabel(c.complaints,20)},{l:'Satisfaction',p:c.satisfaction,cl:tierLabel(c.satisfaction,20)}];
+  var achGap=parseFloat(lat.Sales_Target)-parseFloat(lat.Actual_Sales);
+  var achGapPct=(achGap/parseFloat(lat.Sales_Target)*100);
+  var achTrend=m.rows.slice(-4).map(function(r){return((parseFloat(r.Actual_Sales)/parseFloat(r.Sales_Target))*100).toFixed(1)+'%'}).join(' \u2192 ');
+  var html='<div class="container" style="padding-top:24px"><div class="wizard"><div class="step done"><div class="num">\u2713</div> Upload</div><div class="sep"></div><div class="step done"><div class="num">\u2713</div> Analysis</div><div class="sep"></div><div class="step active"><div class="num">3</div> Report</div></div><div style="max-width:760px;margin:0 auto">';
+  html+='<div style="margin-bottom:28px"><h1 style="font-size:26px;font-weight:700;margin-bottom:8px">AI Risk Report</h1><div style="font-size:13px;color:var(--text-muted)">Dataset: '+currentLabel+' \u00b7 Generated: '+new Date().toLocaleString('en-MY')+' \u00b7 KPI Sentinel AI Risk Engine v1.0</div></div>';
+  html+='<div class="risk-banner" style="background:'+levelBg(s.level)+';color:'+levelColor(s.level)+';margin-bottom:28px"><div><div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;opacity:.8;margin-bottom:4px">Overall Risk Score</div><div><span class="score">'+s.total+'</span><span class="score-suffix">/100</span></div><div class="breakdown">Revenue '+c.revenue+' + Target '+c.target+' + Cost '+c.cost+' + Complaints '+c.complaints+' + Satisfaction '+c.satisfaction+'</div></div><div class="level-tag" style="color:'+levelColor(s.level)+'">'+s.level+'</div></div>';
+  html+='<div class="report-section"><h3>Score Breakdown</h3><div class="table-wrap"><table><thead><tr><th>KPI</th><th>Evidence</th><th>Tier</th><th style="text-align:right">Points</th></tr></thead><tbody>';
+  bd.forEach(function(b){var t=tierLabel(b.pts,maxP[b.kpi]);html+='<tr><td style="font-weight:600">'+b.kpi+'</td><td>'+b.ev+'</td><td><span class="chip '+t.c+'">'+t.l+'</span></td><td style="text-align:right;font-weight:700">'+b.pts+'</td></tr>'});
+  html+='<tr style="border-top:2px solid #e5e7eb"><td colspan="3" style="font-weight:700">Total</td><td style="text-align:right;font-weight:800;font-size:16px">'+s.total+'/100</td></tr></tbody></table></div></div>';
+  html+='<div class="report-section"><h3>Score Composition</h3><div class="comp-bar">'+segs.filter(function(x){return x.p>0}).map(function(x){return'<div class="seg" style="flex:'+x.p+';background:'+levelColor(x.cl.l)+'" title="'+x.l+': '+x.p+'">'+(x.p>3?x.p:'')+'</div>'}).join('')+'</div><div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">'+segs.map(function(x){return'<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:'+levelColor(x.cl.l)+';display:inline-block"></span>'+x.l+' ('+x.p+')</span>'}).join('')+'</div></div>';
+  var an=currentResult.anomalies;
+  html+='<div class="report-section"><h3>Financial Anomalies</h3>'+(an.financial.length?'<ul>'+an.financial.map(function(a){return'<li>'+a+'</li>'}).join('')+'</ul>':'<p style="color:var(--text-muted);font-size:14px">No financial anomalies detected.</p>')+(an.breaches.length?'<ul>'+an.breaches.map(function(a){return'<li style="color:var(--critical)">'+a+'</li>'}).join('')+'</ul>':'')+'</div>';
+  html+='<div class="report-section"><h3>Customer Experience Anomalies</h3>'+(an.customer.length?'<ul>'+an.customer.map(function(a){return'<li>'+a+'</li>'}).join('')+'</ul>':'<p style="color:var(--text-muted);font-size:14px">No customer experience anomalies detected.</p>')+'</div>';
+  html+='<div class="report-section"><h3>Target Gaps</h3><ul><li>Current achievement: <strong>'+m.achievement.toFixed(1)+'%</strong> of sales target</li><li>Absolute gap: <strong>'+fmtRM(achGap)+'</strong> ('+achGapPct.toFixed(1)+'% shortfall)</li><li>4-month achievement trend: '+achTrend+'</li></ul></div>';
+  html+='<div class="report-section"><h3>Possible Root Causes</h3>';
+  currentResult.hypotheses.forEach(function(h){if(h.startsWith('Possible cause')){html+='<div class="hypothesis"><em>Possible cause:</em> '+h.replace('Possible cause: ','')+'</div>'}else{html+='<div style="font-size:14px;color:var(--text-muted);font-style:italic;margin-bottom:8px;padding:8px 0">'+h+'</div>'}});
+  html+='</div>';
+  html+='<div class="report-section"><h3>Recommended Actions</h3><ol style="padding-left:20px">'+currentResult.actions.map(function(a){return'<li style="margin-bottom:10px;line-height:1.7">'+a.text+'<br><span style="font-size:12px;color:var(--text-muted)">Follow-up: '+a.metric+'</span></li>'}).join('')+'</ol></div>';
+  html+='<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:var(--radius);padding:16px 20px;font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:28px">Root causes are hypotheses generated from correlation; validate before acting. This report is generated by a rule-based risk engine and does not constitute professional advice.</div>';
+  html+='<div style="display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;align-items:center"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-secondary" onclick="copyReport()">\ud83d\udccb Copy Report</button><button class="btn-secondary" onclick="exportReport()">\ud83d\udce5 Export Markdown</button></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-text" onclick="navigate(\'#/dashboard\')">\u2190 Dashboard</button><button class="btn-primary" onclick="navigate(\'#/recommendations\')">Go to Recommendations \u2192</button></div></div></div></div>';
+  document.getElementById('page-report').innerHTML=html;
+}
+
+function getReportMarkdown(){if(!currentResult)return'';var s=currentResult.scores,c=s.components,an=currentResult.anomalies;var md='# KPI Sentinel AI \u2014 Risk Report\n\n**Dataset:** '+currentLabel+'\n**Generated:** '+new Date().toLocaleString('en-MY')+'\n\n## Overall Risk Score: '+s.total+'/100 ('+s.level+')\nRevenue '+c.revenue+' + Target '+c.target+' + Cost '+c.cost+' + Complaints '+c.complaints+' + Satisfaction '+c.satisfaction+'\n\n## Financial Anomalies\n'+an.financial.map(function(a){return'- '+a}).join('\n')+'\n'+an.breaches.map(function(a){return'- '+a}).join('\n')+'\n\n## Customer Experience Anomalies\n'+an.customer.map(function(a){return'- '+a}).join('\n')+'\n\n## Possible Root Causes\n'+currentResult.hypotheses.map(function(h){return'- '+h}).join('\n')+'\n\n## Recommended Actions\n'+currentResult.actions.map(function(a,i){return(i+1)+'. '+a.text}).join('\n')+'\n';return md}
+function copyReport(){navigator.clipboard.writeText(getReportMarkdown()).then(function(){showToast('Report copied to clipboard')})}
+function exportReport(){var b=new Blob([getReportMarkdown()],{type:'text/markdown'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='risk_report_'+new Date().toISOString().slice(0,10)+'.md';a.click()}
+
+function renderRecommendations(){
+  if(!currentResult){navigate('#/home');return}
+  var acts=currentResult.actions;
+  var html='<div class="container" style="padding-top:24px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px"><div><h1 style="font-size:26px;font-weight:700;margin-bottom:4px">Action Plan</h1><p style="font-size:14px;color:var(--text-muted)">'+acts.length+' actions ranked by impact on the risk score</p></div><div style="display:flex;gap:8px"><button class="btn-secondary" onclick="exportActions()">\ud83d\udce5 Export CSV</button><button class="btn-text" onclick="navigate(\'#/report\')">\u2190 Back to Report</button></div></div>';
+  acts.forEach(function(a,i){
+    var st=actionStatuses[i]||'Not started';var fd=actionFormData[i]||{owner:'',due:'',metric:a.metric,notes:''};
+    var stCls=st==='Done'?'chip-low':(st==='In progress'?'chip-medium':'chip-high');
+    html+='<div class="action-card"><div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:12px"><div class="rank">'+(i+1)+'</div><div style="flex:1"><div style="font-size:15px;font-weight:600;line-height:1.6;margin-bottom:6px">'+a.text+'</div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-size:13px;color:var(--text-muted)">Addresses <strong>'+a.pts+'</strong> of 100 risk points</span><span class="chip '+stCls+'" style="font-size:11px">'+st+'</span></div></div></div><div class="action-fields"><div><label>Owner</label><input type="text" placeholder="Assign to..." maxlength="50" value="'+fd.owner+'" onchange="updateActionField('+i+',\'owner\',this.value)"></div><div><label>Due Date</label><input type="date" value="'+fd.due+'" onchange="updateActionField('+i+',\'due\',this.value)"></div><div><label>Follow-up Metric</label><input type="text" value="'+fd.metric+'" onchange="updateActionField('+i+',\'metric\',this.value)"></div><div><label>Notes</label><textarea maxlength="300" placeholder="Optional notes..." onchange="updateActionField('+i+',\'notes\',this.value)">'+fd.notes+'</textarea></div></div><div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">'+(st==='Not started'?'<button class="btn-primary" onclick="assignAction('+i+')">Assign</button>':'')+(st==='In progress'?'<button class="btn-secondary" onclick="markDone('+i+')">Mark Done</button>':'')+(st==='Done'?'<span style="font-size:14px;color:var(--low);font-weight:600">\u2713 Completed</span>':'')+'</div></div>';
+  });
+  html+='<div class="card" style="margin-top:24px"><h2 style="font-size:15px;font-weight:600;margin-bottom:16px">Action Plan Summary</h2><div class="table-wrap"><table><thead><tr><th>#</th><th>Action</th><th>Addresses</th><th>Owner</th><th>Due</th><th>Follow-up Metric</th><th>Status</th></tr></thead><tbody>';
+  acts.forEach(function(a,i){var st=actionStatuses[i]||'Not started';var fd=actionFormData[i]||{owner:'',due:'',metric:a.metric};var stCls=st==='Done'?'chip-low':(st==='In progress'?'chip-medium':'chip-high');html+='<tr><td style="font-weight:700">'+(i+1)+'</td><td style="max-width:240px">'+a.text.substring(0,60)+'...</td><td>'+a.pts+' pts</td><td>'+(fd.owner||'\u2014')+'</td><td>'+(fd.due||'\u2014')+'</td><td style="font-size:12px">'+fd.metric+'</td><td><span class="chip '+stCls+'" style="font-size:11px">'+st+'</span></td></tr>'});
+  html+='</tbody></table></div></div></div>';
+  document.getElementById('page-recommendations').innerHTML=html;
+}
+function updateActionField(i,f,v){if(!actionFormData[i])actionFormData[i]={owner:'',due:'',metric:currentResult.actions[i].metric,notes:''};actionFormData[i][f]=v}
+function assignAction(i){var fd=actionFormData[i]||{};if(!fd.owner){showToast('Please enter an owner before assigning');return}if(!fd.due){showToast('Please set a due date');return}actionStatuses[i]='In progress';renderRecommendations();showToast('Action assigned')}
+function markDone(i){actionStatuses[i]='Done';renderRecommendations();showToast('Action marked as done \u2014 visible in History')}
+function exportActions(){if(!currentResult)return;var csv='#,Action,Addresses (pts),Owner,Due,Follow-up Metric,Status\n';currentResult.actions.forEach(function(a,i){var st=actionStatuses[i]||'Not started';var fd=actionFormData[i]||{owner:'',due:'',metric:a.metric};csv+=(i+1)+',"'+a.text+'",'+a.pts+',"'+(fd.owner)+'","'+(fd.due)+'","'+fd.metric+'",'+st+'\n'});var b=new Blob([csv],{type:'text/csv'});var el=document.createElement('a');el.href=URL.createObjectURL(b);el.download='action_plan.csv';el.click()}
+
+function renderHistory(){
+  var runs=loadHistory();
+  if(historyFilters.levels.size>0)runs=runs.filter(function(r){return historyFilters.levels.has(r.level)});
+  if(historyFilters.search)runs=runs.filter(function(r){return r.label.toLowerCase().includes(historyFilters.search.toLowerCase())});
+  runs.sort(function(a,b){var va=historySort.col==='timestamp'?new Date(a.timestamp).getTime():a.score;var vb=historySort.col==='timestamp'?new Date(b.timestamp).getTime():b.score;return historySort.asc?va-vb:vb-va});
+  var html='<div class="container" style="padding-top:32px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px"><h1 style="font-size:26px;font-weight:700">Analysis History</h1><button class="btn-primary" onclick="navigate(\'#/upload\')">New Analysis</button></div>';
+  html+='<div class="card" style="margin-bottom:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 20px"><div class="filter-chips">'+['Low','Medium','High','Critical'].map(function(l){return'<button class="filter-chip '+(historyFilters.levels.has(l)?'active':'')+'" onclick="toggleHistoryFilter(\''+l+'\')">'+l+'</button>'}).join('')+'</div><input type="text" placeholder="Search by dataset label..." value="'+historyFilters.search+'" oninput="historyFilters.search=this.value;renderHistory()" style="flex:1;min-width:200px;padding:8px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px"></div>';
+  if(runs.length===0){
+    html+='<div class="card" style="text-align:center;padding:48px 24px"><div style="font-size:48px;margin-bottom:12px">\ud83d\udcca</div><div style="font-size:16px;font-weight:600;margin-bottom:8px">No analyses yet</div><div style="font-size:14px;color:var(--text-muted);margin-bottom:20px">Run your first analysis to see it here</div><button class="btn-primary" onclick="navigate(\'#/upload\')">New Analysis</button></div>';
+  }else{
+    // Chart placeholder (canvas-based)
+    html+='<div class="card" style="margin-bottom:24px;padding:24px"><h2 style="font-size:15px;font-weight:600;margin-bottom:16px">Risk Score Over Time</h2><div style="position:relative;height:200px"><canvas id="historyChart" style="width:100%;height:100%"></canvas></div></div>';
+    html+='<div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap"><button class="btn-secondary" '+(historyChecked.size!==2?'disabled':'')+' onclick="compareRuns()">Compare Selected ('+historyChecked.size+'/2)</button>'+(historyChecked.size>0?'<button class="btn-text" onclick="historyChecked.clear();renderHistory()">Clear selection</button>':'')+'</div>';
+    html+='<div class="card" style="margin-bottom:24px"><div class="table-wrap"><table><thead><tr><th style="width:40px">\u2610</th><th style="cursor:pointer" onclick="sortHistory(\'timestamp\')">Date '+(historySort.col==='timestamp'?(historySort.asc?'\u2191':'\u2193'):'')+'</th><th>Dataset</th><th style="cursor:pointer" onclick="sortHistory(\'score\')">Score '+(historySort.col==='score'?(historySort.asc?'\u2191':'\u2193'):'')+'</th><th>Level</th><th>Top Anomaly</th><th>Actions</th></tr></thead><tbody>';
+    runs.forEach(function(r){
+      html+='<tr><td><input type="checkbox" '+(historyChecked.has(r.id)?'checked':'')+' onchange="toggleHistoryCheck(\''+r.id+'\')" style="width:18px;height:18px;cursor:pointer"></td><td>'+new Date(r.timestamp).toLocaleDateString('en-MY',{day:'numeric',month:'short',year:'numeric'})+'</td><td style="font-weight:600">'+r.label+'</td><td style="font-weight:700">'+r.score+'</td><td><span class="chip '+levelClass(r.level)+'">'+r.level+'</span></td><td style="font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.topAnomaly+'</td><td><div style="display:flex;gap:4px"><button class="btn-text" style="font-size:12px;padding:4px 8px;min-height:32px" onclick="openHistoryRun(\''+r.id+'\')">Open</button><button class="btn-destructive" style="font-size:12px;padding:4px 8px;min-height:32px" onclick="deleteRun(\''+r.id+'\')">Delete</button></div></td></tr>';
+    });
+    html+='</tbody></table></div></div>';
+  }
+  // Compare view
+  html+='<div id="compareView"></div></div>';
+  document.getElementById('page-history').innerHTML=html;
+  if(runs.length>0)drawHistoryChart(runs);
+}
+
+function drawHistoryChart(runs){
+  var canvas=document.getElementById('historyChart');if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  var rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width*2;canvas.height=rect.height*2;
+  ctx.scale(2,2);var w=rect.width,h=rect.height;
+  var pad={t:10,r:20,b:30,l:40};var cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  // Level bands
+  var bands=[{y1:0,y2:25,color:'rgba(22,163,74,0.08)'},{y1:25,y2:50,color:'rgba(217,119,6,0.08)'},{y1:50,y2:75,color:'rgba(234,88,12,0.08)'},{y1:75,y2:100,color:'rgba(220,38,38,0.08)'}];
+  bands.forEach(function(b){var by1=pad.t+ch*(1-b.y2/100);var by2=pad.t+ch*(1-b.y1/100);ctx.fillStyle=b.color;ctx.fillRect(pad.l,by1,cw,by2-by1)});
+  // Threshold lines
+  [25,50,75].forEach(function(v){var y=pad.t+ch*(1-v/100);ctx.strokeStyle='#e5e7eb';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#9ca3af';ctx.font='10px sans-serif';ctx.fillText(v,pad.l-25,y+4)});
+  ctx.fillText('0',pad.l-18,pad.t+ch+4);ctx.fillText('100',pad.l-30,pad.t+4);
+  // Data reversed (oldest first)
+  var data=runs.slice().reverse();
+  if(data.length<2)return;
+  var step=cw/(data.length-1);
+  ctx.beginPath();ctx.strokeStyle='#2563eb';ctx.lineWidth=2;
+  data.forEach(function(d,i){var x=pad.l+i*step;var y=pad.t+ch*(1-d.score/100);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});
+  ctx.stroke();
+  // Points
+  var lc={'Low':'#16a34a','Medium':'#d97706','High':'#ea580c','Critical':'#dc2626'};
+  data.forEach(function(d,i){var x=pad.l+i*step;var y=pad.t+ch*(1-d.score/100);ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle=lc[d.level]||'#2563eb';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+    if(data.length<=10){ctx.fillStyle='#6b7280';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText(d.score,x,y-10);ctx.fillText(new Date(d.timestamp).toLocaleDateString('en-MY',{day:'numeric',month:'short'}),x,pad.t+ch+16)}
+  });
+}
+
+function toggleHistoryFilter(l){if(historyFilters.levels.has(l))historyFilters.levels.delete(l);else historyFilters.levels.add(l);renderHistory()}
+function sortHistory(col){if(historySort.col===col)historySort.asc=!historySort.asc;else{historySort.col=col;historySort.asc=false}renderHistory()}
+function toggleHistoryCheck(id){if(historyChecked.has(id))historyChecked.delete(id);else{if(historyChecked.size>=2){showToast('Select exactly 2 runs to compare');return}historyChecked.add(id)}renderHistory()}
+
+function openHistoryRun(id){
+  var runs=loadHistory();var run=runs.find(function(r){return r.id===id});
+  if(!run||!run.rows){showToast('Run data not available');return}
+  currentDataset=run.rows;currentLabel=run.label;
+  currentResult=runAnalysis(run.rows,run.label);actionStatuses={};actionFormData={};navigate('#/dashboard');
+}
+
+function deleteRun(id){
+  showModal('<h3 style="font-size:18px;font-weight:700;margin-bottom:12px">Delete Analysis</h3><p style="font-size:14px;color:var(--text-muted);margin-bottom:24px">This cannot be undone. Are you sure you want to delete this analysis run?</p><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn-secondary" onclick="closeModal()">Cancel</button><button class="btn-primary" style="background:var(--critical)" onclick="confirmDelete(\''+id+'\')">Delete</button></div>');
+}
+function confirmDelete(id){
+  var runs=loadHistory().filter(function(r){return r.id!==id});saveHistory(runs);historyChecked.delete(id);closeModal();renderHistory();showToast('Analysis deleted');
+}
+
+function compareRuns(){
+  if(historyChecked.size!==2)return;
+  var ids=Array.from(historyChecked);var runs=loadHistory();
+  var r1=runs.find(function(r){return r.id===ids[0]});var r2=runs.find(function(r){return r.id===ids[1]});
+  if(!r1||!r2||!r1.rows||!r2.rows){showToast('Run data not available for comparison');return}
+  var res1=runAnalysis(r1.rows,r1.label),res2=runAnalysis(r2.rows,r2.label);
+  var cv=document.getElementById('compareView');if(!cv)return;
+  cv.innerHTML='<div class="card" style="margin-top:24px"><h2 style="font-size:18px;font-weight:700;margin-bottom:20px">Compare Two Runs</h2><div class="compare-grid"><div class="card" style="border:2px solid '+levelColor(res1.scores.level)+'"><div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">'+r1.label+'</div><div style="font-size:36px;font-weight:800;color:'+levelColor(res1.scores.level)+'">'+res1.scores.total+'<span style="font-size:14px">/100</span></div><span class="chip '+levelClass(res1.scores.level)+'">'+res1.scores.level+'</span><div style="margin-top:12px;font-size:13px">Rev '+res1.scores.components.revenue+' \u00b7 Tgt '+res1.scores.components.target+' \u00b7 Cost '+res1.scores.components.cost+' \u00b7 Cmp '+res1.scores.components.complaints+' \u00b7 Sat '+res1.scores.components.satisfaction+'</div></div><div class="card" style="border:2px solid '+levelColor(res2.scores.level)+'"><div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">'+r2.label+'</div><div style="font-size:36px;font-weight:800;color:'+levelColor(res2.scores.level)+'">'+res2.scores.total+'<span style="font-size:14px">/100</span></div><span class="chip '+levelClass(res2.scores.level)+'">'+res2.scores.level+'</span><div style="margin-top:12px;font-size:13px">Rev '+res2.scores.components.revenue+' \u00b7 Tgt '+res2.scores.components.target+' \u00b7 Cost '+res2.scores.components.cost+' \u00b7 Cmp '+res2.scores.components.complaints+' \u00b7 Sat '+res2.scores.components.satisfaction+'</div></div></div></div>';
+}
+
+// Init
+navigate(location.hash||'#/home');
+</script>
+</body>
+<script>if (window.lucide) lucide.createIcons();</script>
+</html>
